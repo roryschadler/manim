@@ -1,4 +1,155 @@
 import numpy as np
+<<<<<<< Updated upstream
+=======
+import os
+
+MEDIA_DIR = ""
+VIDEO_DIR = ""
+VIDEO_OUTPUT_DIR = ""
+TEX_DIR = ""
+TEXT_DIR = ""
+
+
+def initialize_directories(config):
+    global MEDIA_DIR
+    global VIDEO_DIR
+    global VIDEO_OUTPUT_DIR
+    global TEX_DIR
+    global TEXT_DIR
+
+    video_path_specified = config["video_dir"] or config["video_output_dir"]
+
+    if not (video_path_specified and config["tex_dir"]):
+        if config["media_dir"]:
+            MEDIA_DIR = config["media_dir"]
+        else:
+            MEDIA_DIR = os.path.join(
+                os.path.expanduser('~'),
+                "manim/output"
+            )
+        if not os.path.isdir(MEDIA_DIR):
+            MEDIA_DIR = "./media"
+        print(
+            f"Media will be written to {MEDIA_DIR + os.sep}. You can change "
+            "this behavior with the --media_dir flag."
+        )
+    else:
+        if config["media_dir"]:
+            print(
+                "Ignoring --media_dir, since both --tex_dir and a video "
+                "directory were both passed"
+            )
+
+    TEX_DIR = config["tex_dir"] or os.path.join(MEDIA_DIR, "Tex")
+    TEXT_DIR = os.path.join(MEDIA_DIR, "texts")
+    if not video_path_specified:
+        VIDEO_DIR = os.path.join(MEDIA_DIR, "videos")
+        VIDEO_OUTPUT_DIR = os.path.join(MEDIA_DIR, "videos")
+    elif config["video_output_dir"]:
+        VIDEO_OUTPUT_DIR = config["video_output_dir"]
+    else:
+        VIDEO_DIR = config["video_dir"]
+
+    for folder in [VIDEO_DIR, VIDEO_OUTPUT_DIR, TEX_DIR, TEXT_DIR]:
+        if folder != "" and not os.path.exists(folder):
+            os.makedirs(folder)
+
+NOT_SETTING_FONT_MSG='''
+Warning:
+You haven't set font.
+If you are not using English, this may cause text rendering problem.
+You set font like:
+text = Text('your text', font='your font')
+or:
+class MyText(Text):
+    CONFIG = {
+        'font': 'My Font'
+    }
+'''
+START_X = 30
+START_Y = 20
+NORMAL = 'NORMAL'
+ITALIC = 'ITALIC'
+OBLIQUE = 'OBLIQUE'
+BOLD = 'BOLD'
+
+TEX_USE_CTEX = False
+TEX_TEXT_TO_REPLACE = "YourTextHere"
+TEMPLATE_TEX_FILE = os.path.join(
+    os.path.dirname(os.path.realpath(__file__)),
+    "tex_template.tex" if not TEX_USE_CTEX else "ctex_template.tex"
+)
+with open(TEMPLATE_TEX_FILE, "r") as infile:
+    TEMPLATE_TEXT_FILE_BODY = infile.read()
+    TEMPLATE_TEX_FILE_BODY = TEMPLATE_TEXT_FILE_BODY.replace(
+        TEX_TEXT_TO_REPLACE,
+        "\\begin{align*}\n" + TEX_TEXT_TO_REPLACE + "\n\\end{align*}",
+    )
+
+HELP_MESSAGE = """
+   Usage:
+   python extract_scene.py <module> [<scene name>]
+   -p preview in low quality
+   -s show and save picture of last frame
+   -w write result to file [this is default if nothing else is stated]
+   -o <file_name> write to a different file_name
+   -l use low quality
+   -m use medium quality
+   -a run and save every scene in the script, or all args for the given scene
+   -q don't print progress
+   -f when writing to a movie file, export the frames in png sequence
+   -t use transperency when exporting images
+   -n specify the number of the animation to start from
+   -r specify a resolution
+   -c specify a background color
+"""
+SCENE_NOT_FOUND_MESSAGE = """
+   {} is not in the script
+"""
+CHOOSE_NUMBER_MESSAGE = """
+Choose number corresponding to desired scene/arguments.
+(Use comma separated list for multiple entries)
+Choice(s): """
+INVALID_NUMBER_MESSAGE = "Fine then, if you don't want to give a valid number I'll just quit"
+
+NO_SCENE_MESSAGE = """
+   There are no scenes inside that module
+"""
+
+# There might be other configuration than pixel shape later...
+PRODUCTION_QUALITY_CAMERA_CONFIG = {
+    "pixel_height": 1440,
+    "pixel_width": 2560,
+    "frame_rate": 60,
+}
+
+HIGH_QUALITY_CAMERA_CONFIG = {
+    "pixel_height": 1080,
+    "pixel_width": 1920,
+    "frame_rate": 60,
+}
+
+MEDIUM_QUALITY_CAMERA_CONFIG = {
+    "pixel_height": 720,
+    "pixel_width": 1280,
+    "frame_rate": 30,
+}
+
+LOW_QUALITY_CAMERA_CONFIG = {
+    "pixel_height": 480,
+    "pixel_width": 854,
+    "frame_rate": 15,
+}
+
+DEFAULT_PIXEL_HEIGHT = PRODUCTION_QUALITY_CAMERA_CONFIG["pixel_height"]
+DEFAULT_PIXEL_WIDTH = PRODUCTION_QUALITY_CAMERA_CONFIG["pixel_width"]
+DEFAULT_FRAME_RATE = 60
+
+DEFAULT_POINT_DENSITY_2D = 25
+DEFAULT_POINT_DENSITY_1D = 250
+
+DEFAULT_STROKE_WIDTH = 4
+>>>>>>> Stashed changes
 
 # Sizes relevant to default camera frame
 ASPECT_RATIO = 16.0 / 9.0

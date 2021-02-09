@@ -147,3 +147,9 @@ dmypy.json
 
 # 
 /videos
+primes.py
+/media_dir.txt
+output/
+venv/
+*egg-info
+input/
